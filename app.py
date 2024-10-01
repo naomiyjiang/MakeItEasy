@@ -28,7 +28,7 @@ def register_seller():
 
     return jsonify(new_seller.register_seller(name, email)), 201
 
-#@app.route('/product', methods=['POST'])
+@app.route('/product', methods=['POST'])
 def create_product():
     global product_id_counter
     data = request.json
