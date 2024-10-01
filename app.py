@@ -1,11 +1,13 @@
 from flask import Flask, request, jsonify
+from seller import Seller
+from product import Product
 
 app = Flask(__name__)
 
-# In-memory storage for demonstration purposes
-sellers = []
-products = []
-orders = []
+sellers = {}
+products = {}
+seller_id_counter = 1
+product_id_counter = 1
 
 # Add a root route to avoid the 404 error
 @app.route('/')
@@ -15,46 +17,79 @@ def index():
 # Register a new seller
 @app.route('/seller/register', methods=['POST'])
 def register_seller():
+    global seller_id_counter
     data = request.json
-    new_seller = {
-        'name': data['name'],
-        'email': data['email']
-    }
-    sellers.append(new_seller)
-    return jsonify({"message": "Seller registered successfully."}), 201
+    name = data.get('name')
+    email = data.get('email')
 
-# Retrieve product details
+    new_seller = Seller(seller_id_counter, name, email)
+    sellers[seller_id_counter] = new_seller
+    seller_id_counter += 1
+
+    return jsonify(new_seller.register_seller(name, email)), 201
+
+#@app.route('/product', methods=['POST'])
+def create_product():
+    global product_id_counter
+    data = request.json
+    seller_id = data.get('seller_id')
+    name = data.get('name')
+    price = data.get('price')
+    stock = data.get('stock')
+    description = data.get('description')
+    category = data.get('category')
+
+    if seller_id not in sellers:
+        return jsonify({"error": "Seller not found"}), 404
+
+    new_product = Product(product_id_counter, sellers[seller_id], name, price, stock, description, category)
+    products[product_id_counter] = new_product
+    sellers[seller_id].add_product(new_product)
+    product_id_counter += 1
+
+    return jsonify({"message": "Product created successfully.", "product_id": new_product.product_id}), 201
+
+# Route to get product details
 @app.route('/product/<int:product_id>', methods=['GET'])
-def get_product(product_id):
-    product = next((p for p in products if p['product_id'] == product_id), None)
-    if product:
-        return jsonify(product), 200
-    return jsonify({"error": "Product not found"}), 404
+def get_product_details(product_id):
+    product = products.get(product_id)
 
-# Update product information
-@app.route('/product/<int:product_id>', methods=['PUT'])
-def update_product(product_id):
+    if not product:
+        return jsonify({"error": "Product not found"}), 404
+
+    return jsonify(product.get_details()), 200
+
+# Route to update stock
+@app.route('/product/<int:product_id>/stock', methods=['PUT'])
+def update_stock(product_id):
+    product = products.get(product_id)
+
+    if not product:
+        return jsonify({"error": "Product not found"}), 404
+
     data = request.json
-    product = next((p for p in products if p['product_id'] == product_id), None)
-    if product:
-        product.update(data)
-        return jsonify({"message": "Product updated successfully."}), 200
-    return jsonify({"error": "Product not found"}), 404
+    quantity = data.get('quantity', 0)
 
-# Get all orders for seller’s products
-@app.route('/seller/orders', methods=['GET'])
-def get_orders():
-    return jsonify(orders), 200
+    try:
+        product.update_stock(quantity)
+        return jsonify({"message": "Stock updated successfully."}), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
 
-# Fulfill an order
-@app.route('/order/<int:order_id>/fulfill', methods=['PUT'])
-def fulfill_order(order_id):
-    order = next((o for o in orders if o['order_id'] == order_id), None)
-    if order:
-        order['status'] = 'fulfilled'
-        return jsonify({"message": "Order fulfilled."}), 200
-    return jsonify({"error": "Order not found"}), 404
+# Route to check product availability
+@app.route('/product/<int:product_id>/availability', methods=['GET'])
+def check_availability(product_id):
+    product = products.get(product_id)
 
+    if not product:
+        return jsonify({"error": "Product not found"}), 404
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000, debug=True)
+    required_quantity = int(request.args.get('quantity', 1))
+
+    if product.check_availability(required_quantity):
+        return jsonify({"available": True, "message": "Product is available."}), 200
+    else:
+        return jsonify({"available": False, "message": "Not enough stock."}), 200
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8000, debug=True)

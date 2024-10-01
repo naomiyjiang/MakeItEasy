@@ -9,7 +9,15 @@ class Product:
         self.category = category
 
     def update_stock(self, quantity):
+        if self.stock + quantity < 0:
+            raise ValueError("Stock cannot be negative.")
         self.stock += quantity
+
+    def reduce_stock(self, quantity):
+        if self.stock >= quantity:
+            self.stock -= quantity
+        else:
+            raise ValueError("Not enough stock to fulfill the order.")
 
     def get_details(self):
         return {
