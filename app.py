@@ -1,12 +1,13 @@
 from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
+from db_setup import db  # Import db from db_setup.py
 from seller import Seller
 from product import Product
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:dbuserdbuser@34.173.164.27/Seller_Service'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+db.init_app(app)  # Initialize db with the Flask app
+
 
 # Index route
 @app.route('/')

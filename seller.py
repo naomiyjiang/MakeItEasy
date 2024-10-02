@@ -1,13 +1,12 @@
-from app import db
+from db_setup import db  # Import db from db_setup.py
 
 class Seller(db.Model):
-    __tablename__ = 'Seller'
+    __tablename__ = 'seller'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
-    
-    # Use a string 'Product' for the relationship to avoid forward reference issues
+
     products = db.relationship('Product', backref='seller', lazy=True)
 
     def register_seller(self):

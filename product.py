@@ -1,8 +1,8 @@
-from app import db
+from db_setup import db  # Import db from db_setup.py
 
 class Product(db.Model):
-    __tablename__ = 'Product'
-    
+    __tablename__ = 'product'
+
     id = db.Column(db.Integer, primary_key=True)
     seller_id = db.Column(db.Integer, db.ForeignKey('seller.id'), nullable=False)
     name = db.Column(db.String(100), nullable=False)
