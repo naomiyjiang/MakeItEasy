@@ -1,7 +1,8 @@
 from db_setup import db  # Import db from db_setup.py
 
 class Seller(db.Model):
-    __tablename__ = 'seller'
+    __tablename__ = 'Seller'  # Match the case in your database
+
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)

@@ -1,7 +1,8 @@
 from db_setup import db  # Import db from db_setup.py
 
 class Product(db.Model):
-    __tablename__ = 'product'
+    __tablename__ = 'Product'  # Match the case in your database
+
 
     id = db.Column(db.Integer, primary_key=True)
     seller_id = db.Column(db.Integer, db.ForeignKey('seller.id'), nullable=False)
