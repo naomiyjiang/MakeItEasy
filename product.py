@@ -1,11 +1,10 @@
-from db_setup import db  # Import db from db_setup.py
+from app import db
 
 class Product(db.Model):
-    __tablename__ = 'Product'  # Match the case in your database
+    __tablename__ = 'Product'
 
-
-    id = db.Column(db.Integer, primary_key=True)
-    seller_id = db.Column(db.Integer, db.ForeignKey('seller.id'), nullable=False)
+    id = db.Column(db.Integer, primary_key=True)  # Product ID as PK
+    seller_id = db.Column(db.Integer, db.ForeignKey('seller.id'), nullable=False)  # FK Seller ID
     name = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Float, nullable=False)
     stock = db.Column(db.Integer, nullable=False)
@@ -27,3 +26,4 @@ class Product(db.Model):
 
     def check_availability(self, required_quantity):
         return self.stock >= required_quantity
+
