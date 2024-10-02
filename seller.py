@@ -1,4 +1,23 @@
-class Seller:
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
+
+class Seller(db.Model):
+    __tablename__ = 'seller'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    
+    # Relationship with the Product table
+    products = db.relationship('Product', backref='seller', lazy=True)
+
+    def register_seller(self):
+        """Returns a dictionary with seller details."""
+        return {"id": self.id, "name": self.name, "email": self.email}
+
+
+'''class Seller:
     def __init__(self, seller_id, name, email):
         self.seller_id = seller_id
         self.name = name
@@ -47,4 +66,4 @@ class Seller:
                 if stock is not None:
                     product.stock = stock
                 return {"message": "Product updated."}
-        return {"error": "Product not found."}
+        return {"error": "Product not found."}'''
