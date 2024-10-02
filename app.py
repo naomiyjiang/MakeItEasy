@@ -14,6 +14,11 @@ db = SQLAlchemy(app)
 with app.app_context():
     db.create_all()
 
+@app.route('/')
+def index():
+    return 'Welcome to the Seller Service API!'
+
+
 # Test database connection route
 @app.route('/test-db-connection', methods=['GET'])
 def test_db_connection():
