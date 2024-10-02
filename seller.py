@@ -1,9 +1,7 @@
-from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
+from app import db
 
 class Seller(db.Model):
-    __tablename__ = 'seller'
+    __tablename__ = 'Seller'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)

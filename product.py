@@ -1,10 +1,8 @@
-from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
+from app import db
 
 class Product(db.Model):
-    __tablename__ = 'product'
-
+    __tablename__ = 'Product'
+    
     id = db.Column(db.Integer, primary_key=True)
     seller_id = db.Column(db.Integer, db.ForeignKey('seller.id'), nullable=False)
     name = db.Column(db.String(100), nullable=False)
@@ -28,4 +26,3 @@ class Product(db.Model):
 
     def check_availability(self, required_quantity):
         return self.stock >= required_quantity
-

@@ -3,21 +3,15 @@ from flask_sqlalchemy import SQLAlchemy
 from seller import Seller
 from product import Product
 
-
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:dbuserdbuser@34.173.164.27/Seller_Service'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 db = SQLAlchemy(app)
 
-# Create the tables if they don't exist
-with app.app_context():
-    db.create_all()
-
+# Index route
 @app.route('/')
 def index():
     return 'Welcome to the Seller Service API!'
-
 
 # Test database connection route
 @app.route('/test-db-connection', methods=['GET'])
@@ -62,5 +56,10 @@ def create_product():
 
     return jsonify({"message": "Product created successfully.", "product_id": new_product.id}), 201
 
+# Main entry point for creating tables and running the app
 if __name__ == '__main__':
+    # This will create all tables based on the models defined in your app
+    with app.app_context():
+        db.create_all()
+
     app.run(host='0.0.0.0', port=8000, debug=True)
