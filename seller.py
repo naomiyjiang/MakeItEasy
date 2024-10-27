@@ -1,5 +1,5 @@
-from flask_sqlalchemy import SQLAlchemy
-db = SQLAlchemy()
+# seller.py
+from db_setup import db
 
 class Seller(db.Model):
     __tablename__ = 'Seller'
