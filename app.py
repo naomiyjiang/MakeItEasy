@@ -5,7 +5,7 @@ from seller import Seller
 from product import Product
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:dbuserdbuser@34.173.164.27/Seller_Service'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://yj2747:dbuserdbuser@makeiteasy.ck0scewemjwp.us-east-1.rds.amazonaws.com:3306/Seller_Service'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 Swagger(app)  # Initialize Swagger
